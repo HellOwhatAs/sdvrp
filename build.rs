@@ -1,13 +1,19 @@
-fn main() {
-    let dst = cmake::Config::new("Alkaid-SDVRP")
-        .define("EXTRA_SOURCE_FILE", "src/AlkaidSDVRP.cpp")
-        .build();
+use glob::glob;
 
-    println!(
-        "cargo:rustc-link-search=native={}/lib/AlkaidSD-1.0",
-        dst.display()
-    );
-    println!("cargo:rustc-link-lib=static=AlkaidSD");
+fn main() {
+    let srcs = glob("Alkaid-SDVRP/src/**/*.cpp")
+        .unwrap()
+        .into_iter()
+        .map(|e| e.unwrap().display().to_string())
+        .chain(["src/AlkaidSDVRP.cpp".to_owned()].into_iter())
+        .collect::<Vec<_>>();
+
+    cxx_build::bridge("src/main.rs")
+        .files(&srcs)
+        .include("Alkaid-SDVRP/include")
+        .include("src/")
+        .std("c++17")
+        .compile("Alkaid-SDVRP");
+
     println!("cargo:rerun-if-changed=Alkaid-SDVRP");
-    println!("cargo:rerun-if-changed=src/AlkaidSDVRP.cpp");
 }
