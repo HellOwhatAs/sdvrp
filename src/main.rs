@@ -1,4 +1,5 @@
 mod config;
+mod instance;
 
 #[cxx::bridge(namespace = "alkaidsd")]
 mod ffi {
@@ -64,7 +65,10 @@ fn split_results(results: Vec<i32>) -> Vec<Vec<(i32, i32)>> {
     return routes;
 }
 
-fn solve_sdvrp<T: config::AlkaidConfig>(config: T) -> Vec<Vec<(i32, i32)>> {
+fn solve_sdvrp<T: config::AlkaidConfig, T2: instance::AlkaidInstance>(
+    config: T,
+    instance: T2,
+) -> Vec<Vec<(i32, i32)>> {
     let result = unsafe {
         ffi::solve_sdvrp(
             config.random_seed(),
@@ -92,12 +96,12 @@ fn solve_sdvrp<T: config::AlkaidConfig>(config: T) -> Vec<Vec<(i32, i32)>> {
             config.ruin_method_type().to_random_ruin_sizes(),
             config.sorters().iter().map(|(e, _)| e.to_str()).collect(),
             config.sorters().iter().map(|(_, e)| *e).collect(),
-            100,
-            vec![60, 90, 60, 90, 60, 90, 60, 90],
-            "COORD_LIST",
-            vec![1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-            vec![0, 1000, 0, -1000, -0, 2000, 0, -2000, -0],
-            vec![0, 0, 1000, 0, -1000, 0, 2000, 0, -2000],
+            instance.capacity(),
+            instance.demands().to_vec(),
+            instance.input_format().to_str(),
+            instance.input_format().to_dense_matrix(),
+            instance.input_format().to_coord_list_x(),
+            instance.input_format().to_coord_list_y(),
         )
     };
     return split_results(result);
@@ -106,5 +110,20 @@ fn solve_sdvrp<T: config::AlkaidConfig>(config: T) -> Vec<Vec<(i32, i32)>> {
 fn main() {
     let mut config = config::Config::default();
     config.time_limit = 1.0;
-    println!("{:?}", solve_sdvrp(config));
+    let instance = instance::Instance::from_coord_list(
+        100,
+        vec![60, 90, 60, 90, 60, 90, 60, 90],
+        vec![
+            (0, 0),
+            (1000, 0),
+            (0, 1000),
+            (-1000, 0),
+            (-0, -1000),
+            (2000, 0),
+            (0, 2000),
+            (-2000, 0),
+            (-0, -2000),
+        ],
+    );
+    println!("{:?}", solve_sdvrp(config, instance));
 }

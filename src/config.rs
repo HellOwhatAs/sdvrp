@@ -206,7 +206,7 @@ pub trait AlkaidConfig {
     /// the type and arguments of acceptance rule to be used by the algorithm.
     fn acceptance_rule_type(&self) -> AcceptanceRuleType;
     /// the type and arguments of ruin method to be used by the algorithm.
-    fn ruin_method_type(&self) -> RuinMethodType;
+    fn ruin_method_type(&self) -> &RuinMethodType;
     /// the list of sorters to be used by the perturbation process.
     fn sorters(&self) -> &[(Sorter, f64)];
 }
@@ -283,8 +283,8 @@ impl AlkaidConfig for Config {
         self.acceptance_rule_type
     }
 
-    fn ruin_method_type(&self) -> RuinMethodType {
-        self.ruin_method_type.clone()
+    fn ruin_method_type(&self) -> &RuinMethodType {
+        &self.ruin_method_type
     }
 
     fn sorters(&self) -> &[(Sorter, f64)] {
