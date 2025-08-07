@@ -255,7 +255,6 @@ namespace alkaidsd
         distance_matrix_optimizer.Restore(solution);
 
         rust::Vec<int> result;
-        Node num_routes = 0;
         for (Node node_index : solution.NodeIndices())
         {
             if (!solution.Predecessor(node_index))

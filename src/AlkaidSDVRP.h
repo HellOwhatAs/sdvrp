@@ -5,6 +5,7 @@
 #include <chrono>
 #include <iostream>
 #include <fstream>
+#include <cmath>
 #include "rust/cxx.h"
 #include "sdvrp/src/main.rs.h"
 
