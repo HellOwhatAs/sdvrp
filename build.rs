@@ -16,4 +16,6 @@ fn main() {
         .compile("Alkaid-SDVRP");
 
     println!("cargo:rerun-if-changed=Alkaid-SDVRP");
+    println!("cargo:rerun-if-changed=src/AlkaidSDVRP.h");
+    println!("cargo:rerun-if-changed=src/AlkaidSDVRP.cpp");
 }
