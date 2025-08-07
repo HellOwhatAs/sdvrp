@@ -1,3 +1,5 @@
+mod config;
+
 #[cxx::bridge(namespace = "alkaidsd")]
 mod ffi {
     unsafe extern "C++" {
@@ -62,34 +64,34 @@ fn split_results(results: Vec<i32>) -> Vec<Vec<(i32, i32)>> {
     return routes;
 }
 
-fn main() {
-    let cfg = unsafe {
+fn solve_sdvrp<T: config::AlkaidConfig>(config: T) -> Vec<Vec<(i32, i32)>> {
+    let result = unsafe {
         ffi::solve_sdvrp(
-            42,
-            5.0,
-            0.021,
-            vec![
-                "Relocate",
-                "Swap<2, 0>",
-                "Swap<2, 1>",
-                "Swap<2, 2>",
-                "Cross",
-                "SwapStar",
-                "SdSwapStar",
-            ],
-            vec!["Exchange", "OrOpt<1>"],
-            "LAHC",
-            83,
-            100.0,
-            0.95,
-            "SISRs",
-            36,
-            8,
-            0.740,
-            0.096,
-            vec![1, 2, 3, 4, 5],
-            vec!["random", "demand", "far", "close"],
-            vec![0.078, 0.225, 0.942, 0.120],
+            config.random_seed(),
+            config.time_limit(),
+            config.blink_rate(),
+            config
+                .inter_operators()
+                .iter()
+                .map(|e| e.to_str())
+                .collect(),
+            config
+                .intra_operators()
+                .iter()
+                .map(|e| e.to_str())
+                .collect(),
+            config.acceptance_rule_type().to_str(),
+            config.acceptance_rule_type().to_length(),
+            config.acceptance_rule_type().to_initial_temperature(),
+            config.acceptance_rule_type().to_decay(),
+            config.ruin_method_type().to_str(),
+            config.ruin_method_type().to_average_customers(),
+            config.ruin_method_type().to_max_length(),
+            config.ruin_method_type().to_split_rate(),
+            config.ruin_method_type().to_preserved_probability(),
+            config.ruin_method_type().to_random_ruin_sizes(),
+            config.sorters().iter().map(|(e, _)| e.to_str()).collect(),
+            config.sorters().iter().map(|(_, e)| *e).collect(),
             100,
             vec![60, 90, 60, 90, 60, 90, 60, 90],
             "COORD_LIST",
@@ -98,5 +100,11 @@ fn main() {
             vec![0, 0, 1000, 0, -1000, 0, 2000, 0, -2000],
         )
     };
-    println!("{:?}", split_results(cfg));
+    return split_results(result);
+}
+
+fn main() {
+    let mut config = config::Config::default();
+    config.time_limit = 1.0;
+    println!("{:?}", solve_sdvrp(config));
 }
