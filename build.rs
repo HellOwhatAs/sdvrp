@@ -8,7 +8,7 @@ fn main() {
         .chain(["src/AlkaidSDVRP.cpp".to_owned()].into_iter())
         .collect::<Vec<_>>();
 
-    cxx_build::bridge("src/main.rs")
+    cxx_build::bridge("src/lib.rs")
         .files(&srcs)
         .include("Alkaid-SDVRP/include")
         .include("src/")
