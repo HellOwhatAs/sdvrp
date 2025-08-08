@@ -1,6 +1,6 @@
 [package]
 name = "sdvrp"
-version = "0.1.2"
+version = "0.1.3"
 edition = "2024"
 description = "Rust binding of Alkaid-SDVRP: An Efficient Open-Source Solver for the Vehicle Routing Problem with Split Deliveries"
 license = "MIT"
