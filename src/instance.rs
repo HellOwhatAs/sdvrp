@@ -53,6 +53,16 @@ impl Instance {
         assert!(
             demands.len() + 1 == matrix.len() && matrix.iter().all(|row| row.len() == matrix.len())
         );
+        assert!(
+            matrix
+                .iter()
+                .all(|row| row.len() == matrix.len() && matrix.len() == demands.len() + 1)
+        );
+        assert!(
+            (0..matrix.len())
+                .flat_map(|i| (0..i).map(move |j| (i, j)))
+                .all(|(i, j)| matrix[i][j] == matrix[j][i])
+        );
         Self {
             capacity,
             demands,
