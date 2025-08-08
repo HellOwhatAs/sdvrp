@@ -35,7 +35,7 @@ pub mod ffi {
     }
 }
 
-fn split_results(results: Vec<i32>) -> Vec<Vec<(i32, i32)>> {
+pub fn split_results(results: Vec<i32>) -> Vec<Vec<(i32, i32)>> {
     let mut routes = vec![];
     enum SplitState {
         WaitingRoute,

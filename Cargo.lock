@@ -191,7 +191,7 @@ checksum = "9f6280af86e5f559536da57a45ebc84948833b3bee313a7dd25232e09c878a52"
 
 [[package]]
 name = "sdvrp"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "cxx",
  "cxx-build",
